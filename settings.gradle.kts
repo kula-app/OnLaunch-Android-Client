@@ -10,7 +10,6 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        mavenLocal() // todo remove
     }
 }
 rootProject.name = "OnLaunch client"

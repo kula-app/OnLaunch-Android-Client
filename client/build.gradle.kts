@@ -2,6 +2,7 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
     `maven-publish`
+    signing
 }
 
 android {
@@ -28,6 +29,7 @@ android {
     publishing {
         singleVariant("release") {
             withSourcesJar()
+            withJavadocJar()
         }
     }
 
@@ -45,7 +47,7 @@ publishing {
         register<MavenPublication>("release") {
             groupId = "app.kula"
             artifactId = "onlaunch-android-client"
-            version = "0.0.0-SNAPSHOT"
+            version = "0.0.0"
 
             afterEvaluate {
                 from(components["release"])
@@ -76,9 +78,14 @@ publishing {
             }
         }
     }
-    repositories {
-        mavenLocal()
-    }
+}
+
+ext["signing.key"] = rootProject.ext["signing.key"]
+ext["signing.keyId"] = rootProject.ext["signing.keyId"]
+ext["signing.password"] = rootProject.ext["signing.password"]
+
+signing {
+    sign(publishing.publications)
 }
 
 dependencies {
