@@ -50,8 +50,7 @@ android {
 }
 
 dependencies {
-    // implementation(project(":client"))
-    implementation("app.kula:onlaunch-android-client:0.0.0-SNAPSHOT")
+    implementation(project(":client"))
 
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.0")
