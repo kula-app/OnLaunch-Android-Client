@@ -1,0 +1,50 @@
+import java.io.FileInputStream
+import java.util.*
+
+buildscript {
+    val composeUiVersion by extra("1.3.2")
+}
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+plugins {
+    id("com.android.application") version "7.4.2" apply false
+    id("com.android.library") version "7.4.2" apply false
+    id("org.jetbrains.kotlin.android") version "1.8.10" apply false
+    id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
+}
+
+ext["ossrhUsername"] = ""
+ext["ossrhPassword"] = ""
+ext["sonatypeStagingProfileId"] = ""
+ext["signing.keyId"] = ""
+ext["signing.password"] = ""
+ext["signing.key"] = ""
+
+val secretPropsFile = project.rootProject.file("local.properties")
+if (secretPropsFile.exists()) {
+    // Use local.properties if exists
+    Properties().apply {
+        load(FileInputStream(secretPropsFile))
+    }.forEach { name, value ->
+        ext[name.toString()] = value
+    }
+} else {
+    // Use system environment variables otherwise
+    ext["ossrhUsername"] = System.getenv("OSSRH_USERNAME")
+    ext["ossrhPassword"] = System.getenv("OSSRH_PASSWORD")
+    ext["sonatypeStagingProfileId"] = System.getenv("SONATYPE_STAGING_PROFILE_ID")
+    ext["signing.key"] = System.getenv("SIGNING_KEY")
+    ext["signing.keyId"] = System.getenv("SIGNING_KEY_ID")
+    ext["signing.password"] = System.getenv("SIGNING_PASSWORD")
+}
+
+nexusPublishing {
+    repositories {
+        sonatype {
+            stagingProfileId.set(rootProject.ext["sonatypeStagingProfileId"].toString())
+            username.set(rootProject.ext["ossrhUsername"].toString())
+            password.set(rootProject.ext["ossrhPassword"].toString())
+            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
+        }
+    }
+}
