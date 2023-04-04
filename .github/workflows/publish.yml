@@ -21,9 +21,6 @@ jobs:
       - name: Release build
         run: ./gradlew client:assembleRelease
 
-      - name: Source jar and javadoc
-        run: ./gradlew client:androidSourcesJar client:javadocJar
-
       - name: Publish to MavenCentral
         run: ./gradlew publishReleasePublicationToSonatypeRepository --max-workers 1 # closeAndReleaseSonatypeStagingRepository
         env:
