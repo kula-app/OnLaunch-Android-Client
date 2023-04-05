@@ -22,10 +22,9 @@ jobs:
         run: ./gradlew client:assembleRelease
 
       - name: Export ring file
+        run: echo $SIGNING_KEY | base64 -d > SecretRingKey.gpg
         env:
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
-        run:
-          - echo $SIGNING_KEY | base64 -d > SecretRingKey.gpg
 
       - name: Publish to MavenCentral
         run: ./gradlew publishReleasePublicationToSonatypeRepository --max-workers 1 # closeAndReleaseSonatypeStagingRepository
