@@ -2,7 +2,7 @@ name: Publish
 
 on:
   release:
-    types: [released]
+    types: [ released ]
 
 jobs:
   publish:
@@ -21,6 +21,12 @@ jobs:
       - name: Release build
         run: ./gradlew client:assembleRelease
 
+      - name: Export ring file
+        env:
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+        run:
+          - echo $SIGNING_KEY | base64 -d > SecretRingKey.gpg
+
       - name: Publish to MavenCentral
         run: ./gradlew publishReleasePublicationToSonatypeRepository --max-workers 1 # closeAndReleaseSonatypeStagingRepository
         env:
@@ -28,5 +34,5 @@ jobs:
           OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
           SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
           SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
-          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          SECRET_KEY_RING_FILE: ../SecretRingKey.gpg
           SONATYPE_STAGING_PROFILE_ID: ${{ secrets.SONATYPE_STAGING_PROFILE_ID }}

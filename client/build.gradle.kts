@@ -80,7 +80,7 @@ publishing {
     }
 }
 
-ext["signing.key"] = rootProject.ext["signing.key"]
+ext["signing.secretKeyRingFile"] = rootProject.ext["signing.secretKeyRingFile"]
 ext["signing.keyId"] = rootProject.ext["signing.keyId"]
 ext["signing.password"] = rootProject.ext["signing.password"]
 

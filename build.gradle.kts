@@ -32,7 +32,7 @@ if (secretPropsFile.exists()) {
     ext["ossrhUsername"] = System.getenv("OSSRH_USERNAME")
     ext["ossrhPassword"] = System.getenv("OSSRH_PASSWORD")
     ext["sonatypeStagingProfileId"] = System.getenv("SONATYPE_STAGING_PROFILE_ID")
-    ext["signing.key"] = System.getenv("SIGNING_KEY")
+    ext["signing.secretKeyRingFile"] = System.getenv("SECRET_KEY_RING_FILE")
     ext["signing.keyId"] = System.getenv("SIGNING_KEY_ID")
     ext["signing.password"] = System.getenv("SIGNING_PASSWORD")
 }
