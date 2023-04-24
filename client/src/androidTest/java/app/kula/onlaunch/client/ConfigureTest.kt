@@ -14,8 +14,8 @@ class ConfigureTest {
     @Test
     fun configureWithPublicKey_success() {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        OnLaunch.configure(appContext) {
-            publicKey = "publicKey"
+        OnLaunch.init(appContext) {
+            apiKey = "apiKey"
         }
     }
 
@@ -24,7 +24,7 @@ class ConfigureTest {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
 
         assertThrows(IllegalArgumentException::class.java) {
-            OnLaunch.configure(appContext) {}
+            OnLaunch.init(appContext) {}
         }
     }
 }

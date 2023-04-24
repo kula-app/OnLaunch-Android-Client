@@ -7,8 +7,8 @@ class SampleApp : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        OnLaunch.configure(this) {
-            publicKey = ""
+        OnLaunch.init(this) {
+            apiKey = ""
         }
     }
 }

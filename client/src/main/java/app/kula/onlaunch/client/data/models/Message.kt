@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class Message(
+internal data class Message(
     val id: Int,
     val title: String,
     val body: String,
@@ -13,7 +13,7 @@ data class Message(
 ) : Parcelable
 
 @Parcelize
-data class Action(
+internal data class Action(
     val title: String,
     val actionType: Type,
 ) : Parcelable {

@@ -2,72 +2,98 @@ package app.kula.onlaunch.client
 
 import android.content.Context
 import android.content.Intent
-import app.kula.onlaunch.client.data.models.Action
-import app.kula.onlaunch.client.data.models.Message
+import android.util.Log
+import app.kula.onlaunch.client.data.api.OnLaunchApi
+import app.kula.onlaunch.client.data.dtos.toMessages
+import app.kula.onlaunch.client.data.local.OnLaunchDataStore
 import app.kula.onlaunch.client.ui.OnLaunchActivity
+import kotlinx.coroutines.*
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 object OnLaunch {
-    private var config: OnLaunchConfig? = null
+    internal const val LOG_TAG = "OnLaunch"
+
+    private var _config: OnLaunchConfig? = null
+    private val config
+        get() = _config ?: throw IllegalStateException("OnLaunch has not been initialized")
+    private lateinit var api: OnLaunchApi
+    private lateinit var dataStore: OnLaunchDataStore
 
     /**
-     * Configure OnLaunch client. publicKey must be set
-     * @throws IllegalArgumentException if publicKey is not set
+     * Initialize the OnLaunch client. apiKey must be set
+     * @throws IllegalArgumentException if apiKey is not set
      */
-    fun configure(
+    fun init(
         context: Context,
         configuration: OnLaunchConfiguration.() -> Unit,
     ) {
         val builder = OnLaunchConfigurationBuilder()
         configuration(builder)
-        config = builder.getConfig().also {
-            if (it.shouldCheckOnConfigure) {
-                check(context)
-            }
+        _config = builder.getConfig()
+
+        api = Retrofit.Builder()
+            .baseUrl(config.baseUrl)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(OnLaunchApi::class.java)
+
+        dataStore = OnLaunchDataStore(context = context)
+
+        if (config.shouldCheckOnConfigure) {
+            check(context)
         }
     }
 
     /** Checks for new messages */
-    fun check(context: Context) {
-        val message = Message(
-            id = 1,
-            title = "Freezing the energy consumption",
-            body = "What would George do?\n\nWhen the energy prices are heating up it’s time to cool down and reduce the waste of energy and financial health. While that seems hard, start with the easy wins: for example, when did you defrost your freezer the last time? And by the way, for your normal fridge, 4 degree Celsius are cool enough. Each degree less means 5% more energy.",
-            isBlocking = false,
-            actions = listOf(
-                Action(actionType = Action.Type.DISMISS, title = "Thanks George!"),
-            )
-        )
+    fun check(context: Context) = config.scope.launch {
+        Log.d(LOG_TAG, "Checking for messages...")
+        val messages = api.getMessages(
+            apiKey = config.apiKey,
+        ).toMessages()
+        val dismissedIds = dataStore.getDismissedMessageIds()
 
-        Intent(context, OnLaunchActivity::class.java).apply {
-            putExtra(OnLaunchActivity.EXTRA_MESSAGE, message)
-            flags += Intent.FLAG_ACTIVITY_NEW_TASK
-        }.also {
-            context.startActivity(it)
+        // Show messages that have not been dismissed yet
+        messages.filter { it.id !in dismissedIds }.forEach { message ->
+            Intent(context, OnLaunchActivity::class.java).apply {
+                putExtra(OnLaunchActivity.EXTRA_MESSAGE, message)
+                flags += Intent.FLAG_ACTIVITY_NEW_TASK
+            }.also {
+                context.startActivity(it)
+            }
         }
+    }
+
+    internal fun markMessageDismissed(messageId: Int) = config.scope.launch {
+        dataStore.addDismissedMessageId(messageId)
     }
 }
 
 private data class OnLaunchConfig(
     val baseUrl: String,
-    val publicKey: String,
+    val apiKey: String,
     val shouldCheckOnConfigure: Boolean,
+    val scope: CoroutineScope,
 )
 
 interface OnLaunchConfiguration {
     var baseUrl: String?
-    var publicKey: String?
+    var apiKey: String?
     var shouldCheckOnConfigure: Boolean?
 }
 
 private class OnLaunchConfigurationBuilder : OnLaunchConfiguration {
     override var baseUrl: String? = null
-    override var publicKey: String? = null
+    override var apiKey: String? = null
     override var shouldCheckOnConfigure: Boolean? = null
 
     fun getConfig() = OnLaunchConfig(
-        baseUrl = baseUrl ?: "https://onlaunch.kula.app/v1/clients",
-        publicKey = publicKey
-            ?: throw IllegalArgumentException("Failed to initialize OnLaunch: publicKey not set"),
+        baseUrl = baseUrl ?: "https://onlaunch.kula.app/api/",
+        apiKey = apiKey
+            ?: throw IllegalArgumentException("Failed to initialize OnLaunch: apiKey not set"),
         shouldCheckOnConfigure = shouldCheckOnConfigure ?: true,
+        scope = (MainScope() + CoroutineExceptionHandler { _, throwable ->
+            Log.e(OnLaunch.LOG_TAG, throwable.message, throwable)
+        }),
     )
 }

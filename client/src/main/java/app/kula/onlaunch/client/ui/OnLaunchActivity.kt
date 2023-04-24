@@ -6,7 +6,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -23,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import app.kula.onlaunch.client.OnLaunch
 import app.kula.onlaunch.client.data.models.Action
 import app.kula.onlaunch.client.data.models.Message
 
@@ -32,12 +32,14 @@ class OnLaunchActivity : ComponentActivity() {
         const val EXTRA_MESSAGE = "onlaunch_message"
     }
 
+    private lateinit var message: Message
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         actionBar?.hide()
 
-        val message = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        message = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.extras?.getParcelable(EXTRA_MESSAGE, Message::class.java)
         } else {
             intent.extras?.getParcelable(EXTRA_MESSAGE)
@@ -47,22 +49,29 @@ class OnLaunchActivity : ComponentActivity() {
             MaterialTheme {
                 Message(
                     message = message,
-                    close = ::close,
+                    dismiss = ::dismiss,
                 )
             }
         }
     }
 
-    private fun close() = finish()
+    private fun dismiss() {
+        OnLaunch.markMessageDismissed(messageId = message.id)
+        finish()
+    }
 }
 
 @Composable
 private fun Message(
     message: Message,
-    close: () -> Unit,
+    dismiss: () -> Unit,
 ) {
     // Block back gesture if message is blocking
-    BackHandler(message.isBlocking) {}
+    BackHandler {
+        if (!message.isBlocking) {
+            dismiss()
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -77,7 +86,7 @@ private fun Message(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             if (!message.isBlocking) {
-                IconButton(onClick = close) {
+                IconButton(onClick = dismiss) {
                     Image(
                         imageVector = Icons.Default.Close,
                         contentDescription = stringResource(id = android.R.string.cancel),
@@ -104,7 +113,7 @@ private fun Message(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
-                onClick = close,
+                onClick = dismiss,
             ) {
                 Text(
                     text = action.title,
@@ -128,6 +137,6 @@ private fun Preview() {
                 Action(actionType = Action.Type.DISMISS, title = "Thanks George!"),
             )
         ),
-        close = {},
+        dismiss = {},
     )
 }
