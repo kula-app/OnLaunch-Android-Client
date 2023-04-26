@@ -2,12 +2,13 @@ package app.kula.onlaunch.client.data.dtos
 
 import app.kula.onlaunch.client.data.models.Action
 import app.kula.onlaunch.client.data.models.Message
+import com.google.gson.annotations.SerializedName
 
 internal data class MessageDto(
     val id: Int,
     val title: String,
     val body: String,
-    val isBlocking: Boolean,
+    @SerializedName("blocking") val isBlocking: Boolean,
     val actions: List<ActionDto>,
 )
 

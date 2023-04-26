@@ -108,7 +108,7 @@ private fun Message(
             style = MaterialTheme.typography.body1,
         )
 
-        message.actions.forEach { action ->
+        message.actions.forEachIndexed { index, action ->
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -119,10 +119,12 @@ private fun Message(
                     text = action.title,
                 )
             }
+            if (index != message.actions.lastIndex) {
+                Spacer(modifier = Modifier.size(16.dp))
+            }
         }
     }
 }
-
 
 @Preview
 @Composable
