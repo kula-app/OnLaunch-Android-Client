@@ -29,5 +29,8 @@ internal fun MessageDto.toMessage() = Message(
 
 internal fun ActionDto.toAction() = Action(
     title = title,
-    actionType = Action.Type.valueOf(actionType),
+    actionType = when (actionType) {
+        "DISMISS" -> Action.Type.DISMISS
+        else -> Action.Type.DISMISS
+    },
 )
