@@ -5,16 +5,16 @@ import app.kula.onlaunch.client.data.models.Message
 import com.google.gson.annotations.SerializedName
 
 internal data class MessageDto(
-    val id: Int,
-    val title: String,
-    val body: String,
+    @SerializedName("id") val id: Int,
+    @SerializedName("title") val title: String,
+    @SerializedName("body") val body: String,
     @SerializedName("blocking") val isBlocking: Boolean,
-    val actions: List<ActionDto>,
+    @SerializedName("actions") val actions: List<ActionDto>,
 )
 
 internal data class ActionDto(
-    val title: String,
-    val actionType: String,
+    @SerializedName("title") val title: String,
+    @SerializedName("actionType") val actionType: String,
 )
 
 internal fun List<MessageDto>.toMessages() = map(MessageDto::toMessage)

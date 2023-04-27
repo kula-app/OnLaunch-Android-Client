@@ -54,7 +54,7 @@ publishing {
         register<MavenPublication>("release") {
             groupId = "app.kula"
             artifactId = "onlaunch-android-client"
-            version = "0.0.1"
+            version = "0.0.2"
 
             afterEvaluate {
                 from(components["release"])

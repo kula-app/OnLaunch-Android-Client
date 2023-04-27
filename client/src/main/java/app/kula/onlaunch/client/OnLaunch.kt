@@ -40,7 +40,7 @@ object OnLaunch {
 
         dataStore = OnLaunchDataStore(context = context)
 
-        if (config.shouldCheckOnConfigure) {
+        if (config.shouldCheckOnInit) {
             check(context)
         }
     }
@@ -72,26 +72,26 @@ object OnLaunch {
 private data class OnLaunchConfig(
     val baseUrl: String,
     val apiKey: String,
-    val shouldCheckOnConfigure: Boolean,
+    val shouldCheckOnInit: Boolean,
     val scope: CoroutineScope,
 )
 
 interface OnLaunchConfiguration {
     var baseUrl: String?
     var apiKey: String?
-    var shouldCheckOnConfigure: Boolean?
+    var shouldCheckOnInit: Boolean?
 }
 
 private class OnLaunchConfigurationBuilder : OnLaunchConfiguration {
     override var baseUrl: String? = null
     override var apiKey: String? = null
-    override var shouldCheckOnConfigure: Boolean? = null
+    override var shouldCheckOnInit: Boolean? = null
 
     fun getConfig() = OnLaunchConfig(
         baseUrl = baseUrl ?: "https://onlaunch.kula.app/api/",
         apiKey = apiKey
             ?: throw IllegalArgumentException("Failed to initialize OnLaunch: apiKey not set"),
-        shouldCheckOnConfigure = shouldCheckOnConfigure ?: true,
+        shouldCheckOnInit = shouldCheckOnInit ?: true,
         scope = (MainScope() + CoroutineExceptionHandler { _, throwable ->
             Log.e(OnLaunch.LOG_TAG, throwable.message, throwable)
         }),
