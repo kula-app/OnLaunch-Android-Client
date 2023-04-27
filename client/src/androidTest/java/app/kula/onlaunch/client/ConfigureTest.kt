@@ -15,7 +15,7 @@ class ConfigureTest {
     fun configureWithPublicKey_success() {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         OnLaunch.init(appContext) {
-            apiKey = "apiKey"
+            publicKey = "publicKey"
         }
     }
 

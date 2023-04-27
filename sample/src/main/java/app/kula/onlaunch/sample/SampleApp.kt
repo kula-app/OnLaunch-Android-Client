@@ -8,7 +8,7 @@ class SampleApp : Application() {
         super.onCreate()
 
         OnLaunch.init(this) {
-            apiKey = ""
+            publicKey = ""
         }
     }
 }
