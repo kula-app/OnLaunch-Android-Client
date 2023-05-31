@@ -14,9 +14,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 object OnLaunch {
     internal const val LOG_TAG = "OnLaunch"
 
-    private var _config: OnLaunchConfig? = null
-    private val config
-        get() = _config ?: throw IllegalStateException("OnLaunch has not been initialized")
+    private var config: OnLaunchConfig? = null
     private lateinit var api: OnLaunchApi
     private lateinit var dataStore: OnLaunchDataStore
 
@@ -30,7 +28,8 @@ object OnLaunch {
     ) {
         val builder = OnLaunchConfigurationBuilder()
         configuration(builder)
-        _config = builder.getConfig()
+        val config = builder.getConfig()
+        this.config = config
 
         api = Retrofit.Builder()
             .baseUrl(config.baseUrl)
@@ -46,26 +45,36 @@ object OnLaunch {
     }
 
     /** Checks for new messages */
-    fun check(context: Context) = config.scope.launch {
-        Log.d(LOG_TAG, "Checking for messages...")
-        val messages = api.getMessages(
-            publicKey = config.publicKey,
-        ).toMessages()
-        val dismissedIds = dataStore.getDismissedMessageIds()
+    fun check(context: Context) = config?.also { config ->
+        config.scope.launch {
+            Log.d(LOG_TAG, "Checking for messages...")
+            val messages = api.getMessages(
+                publicKey = config.publicKey,
+            ).toMessages()
+            val dismissedIds = dataStore.getDismissedMessageIds()
 
-        // Show messages that have not been dismissed yet
-        messages.filter { it.id !in dismissedIds }.forEach { message ->
-            Intent(context, OnLaunchActivity::class.java).apply {
-                putExtra(OnLaunchActivity.EXTRA_MESSAGE, message)
-                flags += Intent.FLAG_ACTIVITY_NEW_TASK
-            }.also {
-                context.startActivity(it)
+            // Show messages that have not been dismissed yet
+            messages.filter { it.id !in dismissedIds }.forEach { message ->
+                Intent(context, OnLaunchActivity::class.java).apply {
+                    putExtra(OnLaunchActivity.EXTRA_MESSAGE, message)
+                    flags += Intent.FLAG_ACTIVITY_NEW_TASK
+                }.also {
+                    context.startActivity(it)
+                }
             }
         }
-    }
+    }.logNull()
 
-    internal fun markMessageDismissed(messageId: Int) = config.scope.launch {
-        dataStore.addDismissedMessageId(messageId)
+    internal fun markMessageDismissed(messageId: Int) = config?.also { config ->
+        config.scope.launch {
+            dataStore.addDismissedMessageId(messageId)
+        }
+    }.logNull()
+
+    private fun OnLaunchConfig?.logNull() {
+        if (this == null) {
+            Log.w(LOG_TAG, "OnLaunch has not been initialized")
+        }
     }
 }
 
