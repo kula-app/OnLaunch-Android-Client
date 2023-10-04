@@ -15,9 +15,9 @@ plugins {
 ext["ossrhUsername"] = ""
 ext["ossrhPassword"] = ""
 ext["sonatypeStagingProfileId"] = ""
+ext["signing.secretKeyRingFile"] = ""
 ext["signing.keyId"] = ""
 ext["signing.password"] = ""
-ext["signing.key"] = ""
 
 val secretPropsFile = project.rootProject.file("local.properties")
 if (secretPropsFile.exists()) {
