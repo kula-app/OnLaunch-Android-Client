@@ -3,6 +3,7 @@ package app.kula.onlaunch.client.ui
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
@@ -43,7 +44,11 @@ class OnLaunchActivity : ComponentActivity() {
             intent.extras?.getParcelable(EXTRA_MESSAGE, Message::class.java)
         } else {
             intent.extras?.getParcelable(EXTRA_MESSAGE)
-        } ?: throw IllegalArgumentException("Extra $EXTRA_MESSAGE not set")
+        }  ?: run {
+            Log.e("OnLaunchActivity", "Extra $EXTRA_MESSAGE not set")
+            finish()
+            return@onCreate
+        }
 
         setContent {
             MaterialTheme {
