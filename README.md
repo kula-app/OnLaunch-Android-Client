@@ -32,7 +32,7 @@ repositories {
 }
 
 dependencies {
-    implementation("app.kula:onlaunch-android-client:0.0.5")
+    implementation("app.kula:onlaunch-android-client:0.0.6")
 }
 ```
 
