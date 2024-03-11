@@ -18,6 +18,8 @@ users about updates, warnings and maintenance
 Our open-source framework provides an easy-to-integrate client to communicate with the backend and
 display the user interface.
 
+![OnLaunch Android](https://github.com/kula-app/OnLaunch-Android-Client/tree/main/docs/android_onlaunch_example.png)
+
 ## Features
 
 - Display customizable messages to your app users
