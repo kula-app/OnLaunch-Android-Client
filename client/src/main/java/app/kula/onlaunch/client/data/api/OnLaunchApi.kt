@@ -8,5 +8,11 @@ internal interface OnLaunchApi {
     @GET("v0.1/messages")
     suspend fun getMessages(
         @Header("x-api-key") publicKey: String,
+        @Header("X-ONLAUNCH-VERSION-CODE") versionCode: String,
+        @Header("X-ONLAUNCH-VERSION-NAME") versionName: String,
+        @Header("X-ONLAUNCH-PACKAGE-NAME") packageName: String,
+        @Header("X-ONLAUNCH-PLATFORM-NAME") platformName: String,
+        @Header("X-ONLAUNCH-PLATFORM-VERSION") platformVersion: String,
+        @Header("X-ONLAUNCH-UPDATE-AVAILABLE") updateAvailable: Boolean?,
     ): List<MessageDto>
 }

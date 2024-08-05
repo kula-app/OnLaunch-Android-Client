@@ -8,11 +8,11 @@ plugins {
 
 android {
     namespace = "app.kula.onlaunch.client"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         minSdk = 21
-        targetSdk = 33
+        targetSdk = 34
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         proguardFiles("consumer-rules.pro")
@@ -54,7 +54,7 @@ publishing {
         register<MavenPublication>("release") {
             groupId = "app.kula"
             artifactId = "onlaunch-android-client"
-            version = "0.0.6"
+            version = "0.0.7"
 
             afterEvaluate {
                 from(components["release"])
@@ -107,9 +107,12 @@ dependencies {
 
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
-    // retrofit
+    // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    // In-app updates
+    implementation("com.google.android.play:app-update-ktx:2.1.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
