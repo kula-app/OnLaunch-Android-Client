@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-    <sub>Created and maintained by <a href="https://kula.app">kula.app</a> and all the amazing <a href="https://github.com/kula-app/OnLaunch-iOS-Client/graphs/contributors">contributors</a>.</sub>
+    <sub>Created and maintained by <a href="https://kula.app">kula.app</a> and all the amazing <a href="https://github.com/kula-app/OnLaunch-Android-Client/graphs/contributors">contributors</a>.</sub>
 </p>
 
 [OnLaunch](https://github.com/kula-app/OnLaunch) is a service allowing app developers to notify app
@@ -63,11 +63,12 @@ override fun onResume() {
 
 The OnLaunch Android client provides a couple of configuration options:
 
-| Name                  | Description                                                                                                             | Default                           |
-|-----------------------|-------------------------------------------------------------------------------------------------------------------------|-----------------------------------|
-| `publicKey`           | Public key used to authenticate with the API                                                                            |                                   |
-| `baseUrl`             | Base URL where the OnLaunch API is hosted at. Change this to point to your self-hosted instance of the OnLaunch server. | `https://onlaunch.kula.app/api/`  |
-| `shouldCheckOnInit`   | Flag indicating if the client should check for new messages immediately after it has been initialized.                  | `true`                            |
+| Name                | Description                                                                                                                                                                                                                        | Default                          |
+|---------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------|
+| `publicKey`         | Public key used to authenticate with the API                                                                                                                                                                                       |                                  |
+| `baseUrl`           | Base URL where the OnLaunch API is hosted at. Change this to point to your self-hosted instance of the OnLaunch server.                                                                                                            | `https://onlaunch.kula.app/api/` |
+| `shouldCheckOnInit` | Flag indicating if the client should check for new messages immediately after it has been initialized.                                                                                                                             | `true`                           |
+| `useInAppUpdates`   | Set to `true` to use Google Play In-App Updates to check for available updates. When using Google Play In-App Updates you accept the Google Play Terms of Service. See https://developer.android.com/guide/playcore/in-app-updates | `false`                          |
 
 # Contributing Guide
 
