@@ -5,7 +5,7 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 
 internal interface OnLaunchApi {
-    @GET("v0.1/messages")
+    @GET("v0.2/messages")
     suspend fun getMessages(
         @Header("x-api-key") publicKey: String,
         @Header("X-ONLAUNCH-VERSION-CODE") versionCode: String,

@@ -22,6 +22,8 @@ internal data class Action(
     @Keep
     enum class Type {
         @SerializedName("DISMISS")
-        DISMISS
+        DISMISS,
+        @SerializedName("OPEN_APP_IN_APP_STORE")
+        OPEN_APP_IN_APP_STORE
     }
 }
