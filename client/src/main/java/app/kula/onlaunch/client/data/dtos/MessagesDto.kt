@@ -17,7 +17,7 @@ internal data class MessageDto(
 @Keep
 internal data class ActionDto(
     @SerializedName("title") val title: String,
-    @SerializedName("actionType") val actionType: Action.Type?,
+    @SerializedName("actionType") val actionType: String?,
 )
 
 internal fun List<MessageDto>.toMessages() = map(MessageDto::toMessage)
@@ -27,10 +27,16 @@ internal fun MessageDto.toMessage() = Message(
     title = title,
     body = body,
     isBlocking = isBlocking,
-    actions = actions.map(ActionDto::toAction)
+    actions = actions.mapNotNull(ActionDto::toAction),
 )
 
-internal fun ActionDto.toAction() = Action(
-    title = title,
-    actionType = actionType ?: Action.Type.DISMISS,
-)
+internal fun ActionDto.toAction(): Action? {
+    return Action(
+        title = title,
+        actionType = when (actionType) {
+            "DISMISS" -> Action.Type.DISMISS
+            "OPEN_APP_IN_APP_STORE" -> Action.Type.OPEN_APP_IN_APP_STORE
+            else -> return null
+        },
+    )
+}

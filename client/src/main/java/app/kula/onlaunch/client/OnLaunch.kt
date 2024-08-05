@@ -1,5 +1,6 @@
 package app.kula.onlaunch.client
 
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.util.Log
@@ -85,6 +86,22 @@ object OnLaunch {
         }
     }.logNull()
 
+    internal fun openAppStore(context: Context) = config?.also { config ->
+        Intent(
+            Intent.ACTION_VIEW,
+            android.net.Uri.parse(config.appStoreUrl)
+        ).apply {
+            if (config.appStoreUrl.startsWith("https://play.google.com/store/apps/details?id=")) {
+                setPackage("com.android.vending")
+            }
+            try {
+                context.startActivity(this)
+            } catch (e: ActivityNotFoundException) {
+                Log.e(LOG_TAG, "Failed to open app store", e)
+            }
+        }
+    }.logNull()
+
     private fun OnLaunchConfig?.logNull() {
         if (this == null) {
             Log.w(LOG_TAG, "OnLaunch has not been initialized")
@@ -120,8 +137,8 @@ private data class OnLaunchConfig(
     val versionCode: Long,
     val versionName: String,
     val useInAppUpdates: Boolean,
-
-    )
+    val appStoreUrl: String,
+)
 
 interface OnLaunchConfiguration {
     var baseUrl: String?
@@ -136,6 +153,7 @@ interface OnLaunchConfiguration {
     var packageName: String?
     var versionCode: Long?
     var versionName: String?
+    var appStoreUrl: String?
 
     /**
      * Set to true to use Google Play In-App Updates to check for available updates.
@@ -155,6 +173,7 @@ private class OnLaunchConfigurationBuilder : OnLaunchConfiguration {
     override var versionCode: Long? = null
     override var versionName: String? = null
     override var useInAppUpdates: Boolean? = null
+    override var appStoreUrl: String? = null
 
     fun getConfig(context: Context) = OnLaunchConfig(
         baseUrl = baseUrl ?: "https://onlaunch.kula.app/api/",
@@ -174,5 +193,7 @@ private class OnLaunchConfigurationBuilder : OnLaunchConfiguration {
         ).versionName,
         packageName = packageName ?: context.packageName,
         useInAppUpdates = useInAppUpdates ?: false,
+        appStoreUrl = appStoreUrl
+            ?: "https://play.google.com/store/apps/details?id=${context.packageName}",
     )
 }

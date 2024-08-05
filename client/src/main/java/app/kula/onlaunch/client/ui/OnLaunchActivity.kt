@@ -8,7 +8,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
@@ -44,7 +52,7 @@ class OnLaunchActivity : ComponentActivity() {
             intent.extras?.getParcelable(EXTRA_MESSAGE, Message::class.java)
         } else {
             intent.extras?.getParcelable(EXTRA_MESSAGE)
-        }  ?: run {
+        } ?: run {
             Log.e("OnLaunchActivity", "Extra $EXTRA_MESSAGE not set")
             finish()
             return@onCreate
@@ -55,6 +63,7 @@ class OnLaunchActivity : ComponentActivity() {
                 Message(
                     message = message,
                     dismiss = ::dismiss,
+                    openInAppStore = ::openInAppStore,
                 )
             }
         }
@@ -64,12 +73,17 @@ class OnLaunchActivity : ComponentActivity() {
         OnLaunch.markMessageDismissed(messageId = message.id)
         finish()
     }
+
+    private fun openInAppStore() {
+        OnLaunch.openAppStore(this)
+    }
 }
 
 @Composable
 private fun Message(
     message: Message,
     dismiss: () -> Unit,
+    openInAppStore: () -> Unit,
 ) {
     // Block back gesture if message is blocking
     BackHandler {
@@ -118,7 +132,10 @@ private fun Message(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
-                onClick = dismiss,
+                onClick = when (action.actionType) {
+                    Action.Type.DISMISS -> dismiss
+                    Action.Type.OPEN_APP_IN_APP_STORE -> openInAppStore
+                },
             ) {
                 Text(
                     text = action.title,
@@ -145,5 +162,6 @@ private fun Preview() {
             )
         ),
         dismiss = {},
+        openInAppStore = {},
     )
 }
