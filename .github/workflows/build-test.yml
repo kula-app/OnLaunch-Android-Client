@@ -29,18 +29,16 @@ jobs:
         with:
           distribution: "temurin"
           java-version: 21
-
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v2.0.10
+          cache: "gradle"
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew build --no-daemon
 
       - name: Run tests
-        run: ./gradlew test
+        run: ./gradlew test --no-daemon
 
       - name: Lint with Gradle
-        run: ./gradlew lint
+        run: ./gradlew lint --no-daemon
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4.0.1
