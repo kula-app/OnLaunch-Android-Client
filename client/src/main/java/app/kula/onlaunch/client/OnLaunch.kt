@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.Locale
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -65,6 +66,9 @@ object OnLaunch {
                 platformName = "android",
                 platformVersion = android.os.Build.VERSION.SDK_INT.toString(),
                 updateAvailable = if (config.useInAppUpdates) checkUpdateAvailable(context = context) else null,
+                locale = config.locale,
+                localeLanguageCode = config.localeLanguageCode,
+                localeRegionCode = config.localeRegionCode,
             ).toMessages()
             val dismissedIds = dataStore.getDismissedMessageIds()
 
@@ -138,6 +142,9 @@ private data class OnLaunchConfig(
     val versionName: String,
     val useInAppUpdates: Boolean,
     val appStoreUrl: String,
+    val locale: String,
+    val localeLanguageCode: String,
+    val localeRegionCode: String
 )
 
 interface OnLaunchConfiguration {
@@ -163,6 +170,10 @@ interface OnLaunchConfiguration {
      * @see https://developer.android.com/guide/playcore/in-app-updates
      */
     var useInAppUpdates: Boolean?
+
+    var locale: String?
+    var localeLanguageCode: String?
+    var localeRegionCode: String?
 }
 
 private class OnLaunchConfigurationBuilder : OnLaunchConfiguration {
@@ -174,6 +185,9 @@ private class OnLaunchConfigurationBuilder : OnLaunchConfiguration {
     override var versionName: String? = null
     override var useInAppUpdates: Boolean? = null
     override var appStoreUrl: String? = null
+    override var locale: String? = null
+    override var localeLanguageCode: String? = null
+    override var localeRegionCode: String? = null
 
     fun getConfig(context: Context) = OnLaunchConfig(
         baseUrl = baseUrl ?: "https://onlaunch.kula.app/api/",
@@ -195,5 +209,19 @@ private class OnLaunchConfigurationBuilder : OnLaunchConfiguration {
         useInAppUpdates = useInAppUpdates ?: false,
         appStoreUrl = appStoreUrl
             ?: "https://play.google.com/store/apps/details?id=${context.packageName}",
+        locale = getLocale(context).toString(),
+        localeLanguageCode = getLocale(context).language,
+        localeRegionCode = getLocale(context).country
     )
+
+    fun getLocale(context: Context): Locale {
+        val locale: Locale =
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                context.resources.configuration.locales[0]
+            } else {
+                @Suppress("DEPRECATION")
+                context.resources.configuration.locale
+            }
+        return locale
+    }
 }

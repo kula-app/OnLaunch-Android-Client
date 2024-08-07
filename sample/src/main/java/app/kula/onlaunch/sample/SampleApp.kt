@@ -8,7 +8,7 @@ class SampleApp : Application() {
         super.onCreate()
 
         OnLaunch.init(this) {
-            publicKey = ""
+            publicKey = "K2UX4fVPFyixVaeLn8Fky_uWhjMr-frADqKqpOCZW2c"
         }
     }
 }
