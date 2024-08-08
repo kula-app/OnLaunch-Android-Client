@@ -1,12 +1,10 @@
 package app.kula.onlaunch.client
 
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
-
+import androidx.test.platform.app.InstrumentationRegistry
+import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith
-
-import org.junit.Assert.*
 
 
 @RunWith(AndroidJUnit4::class)
@@ -16,6 +14,8 @@ class ConfigureTest {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         OnLaunch.init(appContext) {
             publicKey = "publicKey"
+            versionName = "0.0" // Default not available in test
+            shouldCheckOnInit = false
         }
     }
 
