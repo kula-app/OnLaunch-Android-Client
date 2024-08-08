@@ -3,6 +3,7 @@ package app.kula.onlaunch.client
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.util.Log
 import app.kula.onlaunch.client.data.api.OnLaunchApi
 import app.kula.onlaunch.client.data.dtos.toMessages
@@ -10,14 +11,10 @@ import app.kula.onlaunch.client.data.local.OnLaunchDataStore
 import app.kula.onlaunch.client.ui.OnLaunchActivity
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.UpdateAvailability
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.plus
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.Locale
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -64,7 +61,7 @@ object OnLaunch {
                 versionCode = config.versionCode.toString(),
                 versionName = config.versionName,
                 platformName = "android",
-                platformVersion = android.os.Build.VERSION.SDK_INT.toString(),
+                platformVersion = Build.VERSION.SDK_INT.toString(),
                 updateAvailable = if (config.useInAppUpdates) checkUpdateAvailable(context = context) else null,
                 locale = config.locale,
                 localeLanguageCode = config.localeLanguageCode,
@@ -132,7 +129,7 @@ object OnLaunch {
     }
 }
 
-private data class OnLaunchConfig(
+internal data class OnLaunchConfig(
     val baseUrl: String,
     val publicKey: String,
     val shouldCheckOnInit: Boolean,
@@ -144,84 +141,5 @@ private data class OnLaunchConfig(
     val appStoreUrl: String,
     val locale: String,
     val localeLanguageCode: String,
-    val localeRegionCode: String
+    val localeRegionCode: String,
 )
-
-interface OnLaunchConfiguration {
-    var baseUrl: String?
-    var publicKey: String?
-
-    /**
-     *  If set to true, OnLaunch will check for messages on initialization.
-     *
-     * Defaults to true
-     */
-    var shouldCheckOnInit: Boolean?
-    var packageName: String?
-    var versionCode: Long?
-    var versionName: String?
-    var appStoreUrl: String?
-
-    /**
-     * Set to true to use Google Play In-App Updates to check for available updates.
-     * When using Google Play In-App Updates you have to accept the Google Play Terms of Service.
-     *
-     * Defaults to false.
-     * @see https://developer.android.com/guide/playcore/in-app-updates
-     */
-    var useInAppUpdates: Boolean?
-
-    var locale: String?
-    var localeLanguageCode: String?
-    var localeRegionCode: String?
-}
-
-private class OnLaunchConfigurationBuilder : OnLaunchConfiguration {
-    override var baseUrl: String? = null
-    override var publicKey: String? = null
-    override var shouldCheckOnInit: Boolean? = null
-    override var packageName: String? = null
-    override var versionCode: Long? = null
-    override var versionName: String? = null
-    override var useInAppUpdates: Boolean? = null
-    override var appStoreUrl: String? = null
-    override var locale: String? = null
-    override var localeLanguageCode: String? = null
-    override var localeRegionCode: String? = null
-
-    fun getConfig(context: Context) = OnLaunchConfig(
-        baseUrl = baseUrl ?: "https://onlaunch.kula.app/api/",
-        publicKey = publicKey
-            ?: throw IllegalArgumentException("Failed to initialize OnLaunch: publicKey not set"),
-        shouldCheckOnInit = shouldCheckOnInit ?: true,
-        scope = (MainScope() + CoroutineExceptionHandler { _, throwable ->
-            Log.e(OnLaunch.LOG_TAG, throwable.message, throwable)
-        }),
-        versionCode = versionCode ?: context.packageManager.getPackageInfo(
-            context.packageName,
-            0
-        ).versionCode.toLong(),
-        versionName = versionName ?: context.packageManager.getPackageInfo(
-            context.packageName,
-            0
-        ).versionName,
-        packageName = packageName ?: context.packageName,
-        useInAppUpdates = useInAppUpdates ?: false,
-        appStoreUrl = appStoreUrl
-            ?: "https://play.google.com/store/apps/details?id=${context.packageName}",
-        locale = getLocale(context).toString(),
-        localeLanguageCode = getLocale(context).language,
-        localeRegionCode = getLocale(context).country
-    )
-
-    fun getLocale(context: Context): Locale {
-        val locale: Locale =
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                context.resources.configuration.locales[0]
-            } else {
-                @Suppress("DEPRECATION")
-                context.resources.configuration.locale
-            }
-        return locale
-    }
-}
