@@ -8,6 +8,9 @@ internal interface OnLaunchApi {
     @GET("v0.2/messages")
     suspend fun getMessages(
         @Header("x-api-key") publicKey: String,
+        @Header("X-ONLAUNCH-LOCALE") locale: String,
+        @Header("X-ONLAUNCH-LOCALE-LANGUAGE-CODE") localeLanguageCode: String,
+        @Header("X-ONLAUNCH-LOCALE-REGION-CODE") localeRegionCode: String,
         @Header("X-ONLAUNCH-VERSION-CODE") versionCode: String,
         @Header("X-ONLAUNCH-VERSION-NAME") versionName: String,
         @Header("X-ONLAUNCH-PACKAGE-NAME") packageName: String,
