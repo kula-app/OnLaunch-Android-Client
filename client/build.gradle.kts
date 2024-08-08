@@ -96,14 +96,14 @@ signing {
 }
 
 dependencies {
-    implementation("androidx.activity:activity-compose:1.7.1")
-    implementation("androidx.compose.material:material:1.4.2")
+    implementation("androidx.activity:activity-compose:1.9.1")
+    implementation("androidx.compose.material:material:1.6.8")
     implementation("androidx.compose.ui:ui:${rootProject.extra["composeUiVersion"]}")
     implementation("androidx.compose.ui:ui-tooling-preview:${rootProject.extra["composeUiVersion"]}")
 
-    implementation("androidx.core:core-ktx:1.10.0")
+    implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.8.0")
+    implementation("com.google.android.material:material:1.12.0")
 
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
@@ -115,6 +115,6 @@ dependencies {
     implementation("com.google.android.play:app-update-ktx:2.1.0")
 
     testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
 }
