@@ -101,7 +101,7 @@ dependencies {
     implementation("androidx.compose.ui:ui:${rootProject.extra["composeUiVersion"]}")
     implementation("androidx.compose.ui:ui-tooling-preview:${rootProject.extra["composeUiVersion"]}")
 
-    implementation("androidx.core:core-ktx:1.10.0")
+    implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.8.0")
 
