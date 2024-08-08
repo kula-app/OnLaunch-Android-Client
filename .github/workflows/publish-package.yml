@@ -12,14 +12,15 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v4
 
-      - name: Set up JDK 11
+      - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          distribution: adopt
-          java-version: 11
+          distribution: "temurin"
+          java-version: 21
+          cache: "gradle"
 
       - name: Release build
-        run: ./gradlew client:assembleRelease
+        run: ./gradlew client:assembleRelease --no-daemon
 
       - name: Export ring file
         run: echo $SIGNING_KEY | base64 -d > SecretRingKey.gpg
