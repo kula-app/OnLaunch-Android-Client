@@ -2,7 +2,7 @@ import java.io.FileInputStream
 import java.util.*
 
 buildscript {
-    val composeUiVersion by extra("1.7.5")
+    val composeUiVersion by extra("1.7.6")
 }
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
