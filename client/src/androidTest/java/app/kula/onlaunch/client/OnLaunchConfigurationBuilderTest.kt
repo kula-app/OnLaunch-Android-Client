@@ -40,7 +40,7 @@ class OnLaunchConfigurationBuilderTest {
             }
             .getConfig(context = appContext).apply {
                 assertEquals("publicKey", publicKey)
-                assertEquals("https://onlaunch.kula.app/api/", baseUrl)
+                assertEquals("https://api.onlaunch.app/api/", baseUrl)
                 assertEquals(true, shouldCheckOnInit)
                 assertEquals(false, useInAppUpdates)
                 assertEquals("app.kula.onlaunch.client.test", packageName)
@@ -60,7 +60,7 @@ class OnLaunchConfigurationBuilderTest {
         OnLaunchConfigurationBuilder()
             .apply {
                 publicKey = "publicKey" // Required
-                baseUrl = "https://develop.onlaunch.kula.app/api/"
+                baseUrl = "https://develop.api.onlaunch.app/api/"
                 shouldCheckOnInit = false
                 versionName = "0.0"
                 useInAppUpdates = true
@@ -72,7 +72,7 @@ class OnLaunchConfigurationBuilderTest {
             }
             .getConfig(context = appContext).apply {
                 assertEquals("publicKey", publicKey)
-                assertEquals("https://develop.onlaunch.kula.app/api/", baseUrl)
+                assertEquals("https://develop.api.onlaunch.app/api/", baseUrl)
                 assertEquals(false, shouldCheckOnInit)
                 assertEquals(true, useInAppUpdates)
                 assertEquals("app.kula.onlaunch.client", packageName)

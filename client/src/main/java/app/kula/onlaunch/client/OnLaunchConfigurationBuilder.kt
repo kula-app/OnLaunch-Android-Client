@@ -22,7 +22,7 @@ internal class OnLaunchConfigurationBuilder : OnLaunchConfiguration {
     override var localeRegionCode: String? = null
 
     internal fun getConfig(context: Context) = OnLaunchConfig(
-        baseUrl = baseUrl ?: "https://onlaunch.kula.app/api/",
+        baseUrl = baseUrl ?: "https://api.onlaunch.app/api/",
         publicKey = publicKey
             ?: throw IllegalArgumentException("Failed to initialize OnLaunch: publicKey not set"),
         shouldCheckOnInit = shouldCheckOnInit ?: true,
