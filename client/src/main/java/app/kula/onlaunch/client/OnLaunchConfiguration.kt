@@ -6,7 +6,7 @@ interface OnLaunchConfiguration {
     /**
      * Base URL where the OnLaunch API is hosted at. Change this to point to your self-hosted instance of the OnLaunch server.
      *
-     * Defaults to `https://onlaunch.kula.app/api/`
+     * Defaults to `https://api.onlaunch.app/api/`
      */
     var baseUrl: String?
 
