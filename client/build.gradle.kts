@@ -108,8 +108,8 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.1.7")
 
     // Retrofit
-    implementation("com.squareup.retrofit2:retrofit:2.11.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+    implementation("com.squareup.retrofit2:retrofit:3.0.0")
+    implementation("com.squareup.retrofit2:converter-gson:3.0.0")
 
     // In-app updates
     implementation("com.google.android.play:app-update-ktx:2.1.0")
